@@ -9,6 +9,7 @@ interface AuthContextType {
   isGuest: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signInAsGuest: () => void;
   signOut: () => Promise<void>;
 }
@@ -57,9 +58,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       password,
       options: {
-        user_metadata: {
+        data: {
           full_name: fullName,
         },
+      },
+    });
+    if (error) throw error;
+  };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
       },
     });
     if (error) throw error;
@@ -94,6 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isGuest,
     signIn,
     signUp,
+    signInWithGoogle,
     signInAsGuest,
     signOut,
   };

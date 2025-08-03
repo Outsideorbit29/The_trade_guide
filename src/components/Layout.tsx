@@ -39,7 +39,14 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900">
+    <div className="flex h-screen bg-gray-900 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='m0 40l40-40h-40v40zm40 0v-40h-40l40 40z'/%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+      
       {/* Mobile sidebar */}
       <motion.div
         initial={false}
@@ -47,7 +54,7 @@ export default function Layout({ children }: LayoutProps) {
         className="fixed inset-0 z-50 lg:hidden"
       >
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-gray-800 shadow-xl">
+        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-gray-800 bg-opacity-95 backdrop-blur-sm shadow-xl border-r border-gray-700">
           <div className="flex h-16 items-center justify-between px-4">
             <h1 className="text-xl font-bold text-white">TradeTracker Pro</h1>
             <button
@@ -81,7 +88,7 @@ export default function Layout({ children }: LayoutProps) {
       </motion.div>
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-gray-800 shadow-xl">
+      <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-gray-800 bg-opacity-95 backdrop-blur-sm shadow-xl border-r border-gray-700 relative z-10">
         <div className="flex h-16 items-center px-6 bg-gray-900">
           <h1 className="text-xl font-bold text-white">TradeTracker Pro</h1>
         </div>
@@ -117,7 +124,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content */}
       <div className="flex flex-1 flex-col lg:pl-64">
-        <div className="flex h-16 items-center justify-between bg-gray-800 px-4 shadow-lg lg:px-6">
+        <div className="flex h-16 items-center justify-between bg-gray-800 bg-opacity-95 backdrop-blur-sm px-4 shadow-lg lg:px-6 border-b border-gray-700 relative z-10">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-gray-400 hover:text-white lg:hidden"
@@ -142,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </div>
         </div>
-        <main className="flex-1 overflow-auto bg-gray-900">
+        <main className="flex-1 overflow-auto bg-gray-900 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

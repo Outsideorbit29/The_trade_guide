@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, LinkIcon } from '@heroicons/react/24/outline';
 import { usePortfolio } from '../contexts/PortfolioContext';
 import { useAuth } from '../contexts/AuthContext';
 import BrokerList from '../components/BrokerList';
-import AddBrokerModal from '../components/AddBrokerModal';
+import BrokerAuthModal from '../components/BrokerAuthModal';
 
 export default function Brokers() {
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [selectedBroker, setSelectedBroker] = useState('');
   const { brokers, loading } = usePortfolio();
   const { isGuest } = useAuth();
 
@@ -18,6 +19,12 @@ export default function Brokers() {
       </div>
     );
   }
+
+  const handleConnectBroker = (brokerType: string) => {
+    if (isGuest) return;
+    setSelectedBroker(brokerType);
+    setIsAuthModalOpen(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -30,20 +37,12 @@ export default function Brokers() {
           <h1 className="text-3xl font-bold text-white mb-2">Broker Connections</h1>
           <p className="text-gray-400">Connect and manage your trading brokers</p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsAddModalOpen(true)}
-          disabled={isGuest}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-        >
-          <PlusIcon className="h-5 w-5 mr-2" />
-          Add Broker
-        </motion.button>
         {isGuest && (
-          <p className="text-sm text-yellow-400">
-            Sign up to connect real brokers
-          </p>
+          <div className="bg-yellow-600 bg-opacity-20 border border-yellow-600 rounded-lg p-3">
+            <p className="text-yellow-400 text-sm">
+              <strong>Demo Mode:</strong> Sign up to connect real brokers
+            </p>
+          </div>
         )}
       </motion.div>
 
@@ -53,12 +52,16 @@ export default function Brokers() {
         transition={{ delay: 0.2 }}
         className="bg-gray-800 rounded-xl shadow-xl p-6"
       >
-        <BrokerList brokers={brokers} />
+        <BrokerList brokers={brokers} onConnectBroker={handleConnectBroker} />
       </motion.div>
 
-      <AddBrokerModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+      <BrokerAuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setSelectedBroker('');
+        }}
+        brokerType={selectedBroker}
       />
     </div>
   );
